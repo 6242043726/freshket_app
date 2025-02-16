@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:freshket_app/features/shopping/domain/entities/product_entity.dart';
+import 'package:freshket_app/features/shopping/domain/usecases/checkout.dart';
 
 class CartProvider extends ChangeNotifier {
+  final CheckoutUseCase checkoutUseCase;
+  CartProvider({required this.checkoutUseCase});
+  
   final Map<String, int> _cartItems = {};
   final Map<String, ProductEntity> _productsInCart = {};
 
@@ -79,15 +83,17 @@ class CartProvider extends ChangeNotifier {
 
   double get total => subtotal - discount;
 
-  // Future<bool> checkout() async {
-  //   List<int> productIds = cartItems.map((product) => product["product"]?.id).toList();
-  //   bool success = await checkoutUseCase.call(productIds);
+  Future<bool> checkout() async {
+    List<int> productIds =
+        cartItems.map((item) => item["product"]?.id as int).toList();
 
-  //   if (success) {
-  //     clearCart();
-  //   }
-  //   return success;
-  // }
+    bool success = await checkoutUseCase(productIds);
+
+    if (success) {
+      clearCart();
+    }
+    return success;
+  }
 
   void clearCart() {
     _cartItems.clear();

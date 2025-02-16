@@ -175,7 +175,7 @@ class CartPage extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () async {
-                          bool success = false;
+                          bool success =  await cartProvider.checkout();
                           if (!success) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

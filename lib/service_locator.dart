@@ -1,12 +1,13 @@
-
-
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 import 'package:dio/dio.dart';
 import 'package:freshket_app/core/connection/network_info.dart';
 import 'package:freshket_app/core/constants/constants.dart';
 import 'package:freshket_app/features/shopping/data/datasources/remote/product_data_source.dart';
+import 'package:freshket_app/features/shopping/data/repositories/cart_repository_impl.dart';
 import 'package:freshket_app/features/shopping/data/repositories/product_repository_impl.dart';
+import 'package:freshket_app/features/shopping/domain/repositories/cart_repository.dart';
 import 'package:freshket_app/features/shopping/domain/repositories/product_repository.dart';
+import 'package:freshket_app/features/shopping/domain/usecases/checkout.dart';
 import 'package:freshket_app/features/shopping/domain/usecases/get_product.dart';
 import 'package:freshket_app/features/shopping/domain/usecases/get_recommended_product.dart';
 import 'package:freshket_app/features/shopping/presentation/provider/cart_provider.dart';
@@ -48,5 +49,9 @@ void setupLocator() {
     ),
   );
 
-  getIt.registerFactory<CartProvider>(() => CartProvider());
+  getIt.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(dio));
+
+  getIt.registerLazySingleton<CheckoutUseCase>(() => CheckoutUseCase(getIt<CartRepository>()));
+
+  getIt.registerFactory<CartProvider>(() => CartProvider(checkoutUseCase: getIt<CheckoutUseCase>()));
 }
