@@ -50,4 +50,48 @@ class CartProvider extends ChangeNotifier {
   int getQuantity(ProductEntity product, String type) {
     return _cartItems["${type}_${product.id}"] ?? 0;
   }
+
+  double get subtotal {
+    double total = 0.0;
+    _cartItems.forEach((key, quantity) {
+      final product = _productsInCart[key];
+      if (product != null) {
+        total += product.price * quantity;
+      }
+    });
+    return total;
+  }
+
+  double get discount {
+    double totalDiscount = 0.0;
+    _cartItems.forEach((key, quantity) {
+      final product = _productsInCart[key];
+      if (product != null) {
+        int discountPairs = quantity ~/ 2; 
+        totalDiscount +=
+            discountPairs *
+            product.price *
+            0.1; 
+      }
+    });
+    return totalDiscount;
+  }
+
+  double get total => subtotal - discount;
+
+  // Future<bool> checkout() async {
+  //   List<int> productIds = cartItems.map((product) => product["product"]?.id).toList();
+  //   bool success = await checkoutUseCase.call(productIds);
+
+  //   if (success) {
+  //     clearCart();
+  //   }
+  //   return success;
+  // }
+
+  void clearCart() {
+    _cartItems.clear();
+    _productsInCart.clear();
+    notifyListeners();
+  }
 }
