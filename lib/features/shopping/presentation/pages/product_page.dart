@@ -13,38 +13,69 @@ class ProductPage extends StatelessWidget {
     final cartProvider = Provider.of<CartProvider>(context);
 
     return Scaffold(
-      body: productProvider.products.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              controller: productProvider.scrollController,
-              itemCount: productProvider.recommendedProducts.length +
-                  productProvider.products.length +
-                  2,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return _buildHeader("Recommended Products");
-                }
-                if (index <= productProvider.recommendedProducts.length) {
-                  ProductEntity product =
-                      productProvider.recommendedProducts[index - 1];
-                  return _buildProductItem(context, product, cartProvider, "recommended");
-                }
-                if (index == productProvider.recommendedProducts.length + 1) {
-                  return _buildHeader("Products");
-                }
-                if (index <
-                    (productProvider.recommendedProducts.length +
-                        productProvider.products.length +
-                        1)) {
-                  ProductEntity product =
-                      productProvider.products[index -
-                          productProvider.recommendedProducts.length -
-                          2];
-                  return _buildProductItem(context, product, cartProvider, "product");
-                }
-                return SizedBox();
-              },
-            ),
+      body:
+          productProvider.products.isEmpty
+              ? Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                controller: productProvider.scrollController,
+                itemCount:
+                    productProvider.recommendedProducts.length +
+                    productProvider.products.length +
+                    2 +
+                    (productProvider.isLoading ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return _buildHeader("Recommended Products");
+                  }
+                  if (index <= productProvider.recommendedProducts.length) {
+                    ProductEntity product =
+                        productProvider.recommendedProducts[index - 1];
+                    return _buildProductItem(
+                      context,
+                      product,
+                      cartProvider,
+                      "recommended",
+                    );
+                  }
+                  if (index == productProvider.recommendedProducts.length + 1) {
+                    return _buildHeader("Products");
+                  }
+                  if (index <
+                      (productProvider.recommendedProducts.length +
+                          productProvider.products.length +
+                          1)) {
+                    ProductEntity product =
+                        productProvider.products[index -
+                            productProvider.recommendedProducts.length -
+                            2];
+                    return _buildProductItem(
+                      context,
+                      product,
+                      cartProvider,
+                      "product",
+                    );
+                  }
+                  if (index ==
+                      productProvider.recommendedProducts.length +
+                          productProvider.products.length +
+                          2) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Loading..'),
+                        ],
+                      ),
+                    );
+                  }
+                  return SizedBox();
+                },
+              ),
     );
   }
 }
@@ -60,10 +91,15 @@ Widget _buildHeader(String title) {
 }
 
 Widget _buildProductItem(
-    BuildContext context, ProductEntity product, CartProvider cartProvider, String type) {
+  BuildContext context,
+  ProductEntity product,
+  CartProvider cartProvider,
+  String type,
+) {
   int quantity = cartProvider.getQuantity(product, type);
 
-  return ListTile(leading: ClipRRect(
+  return ListTile(
+    leading: ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Image.asset(
         'assets/images/img_placeholder.png',
@@ -74,19 +110,24 @@ Widget _buildProductItem(
     ),
     title: Text(product.name),
     subtitle: Text("\$${product.price.toStringAsFixed(2)}"),
-    trailing: quantity > 0
-        ? _buildQuantityChanger(cartProvider, product, quantity, type)
-        : ElevatedButton(
-            onPressed: () {
-              cartProvider.addToCart(product, type);
-            },
-            child: Text("Add to Cart"),
-          ),
+    trailing:
+        quantity > 0
+            ? _buildQuantityChanger(cartProvider, product, quantity, type)
+            : ElevatedButton(
+              onPressed: () {
+                cartProvider.addToCart(product, type);
+              },
+              child: Text("Add to Cart"),
+            ),
   );
 }
 
 Widget _buildQuantityChanger(
-    CartProvider cartProvider, ProductEntity productEntity, int quantity, String type) {
+  CartProvider cartProvider,
+  ProductEntity productEntity,
+  int quantity,
+  String type,
+) {
   return Row(
     mainAxisSize: MainAxisSize.min,
     children: [

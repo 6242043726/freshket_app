@@ -43,6 +43,15 @@ class CartPage extends StatelessWidget {
                             cartProvider.removeFromCart(product, type);
                           },
                           child: ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.asset(
+                                'assets/images/img_placeholder.png',
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                             title: Text(product.name),
                             subtitle: Text(
                               "\$${product.price.toStringAsFixed(2)}",
