@@ -10,6 +10,7 @@ class GetProducts {
   Future<Either<Failure, Map<String, dynamic>>> call(String? nextCursor) async {
     final response = await productRepository.fetchProducts(nextCursor);
 
+    print(response);
     return response.fold(
       (failure) => Left(failure),
       (data) {
