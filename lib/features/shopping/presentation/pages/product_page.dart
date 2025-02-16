@@ -12,7 +12,12 @@ class ProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
+    int recommendedLength =
+        productProvider.recommendedProducts.isNotEmpty && !productProvider.isRecommendedError
+            ? productProvider.recommendedProducts.length
+            : 1;
     return Scaffold(
       body:
           productProvider.products.isEmpty
@@ -20,7 +25,7 @@ class ProductPage extends StatelessWidget {
               : ListView.builder(
                 controller: productProvider.scrollController,
                 itemCount:
-                    productProvider.recommendedProducts.length +
+                    recommendedLength +
                     productProvider.products.length +
                     2 +
                     (productProvider.isLoading ? 1 : 0),
@@ -28,7 +33,28 @@ class ProductPage extends StatelessWidget {
                   if (index == 0) {
                     return _buildHeader("Recommended Products");
                   }
-                  if (index <= productProvider.recommendedProducts.length) {
+                  if (index == 1 && productProvider.isRecommendedError) {
+                    return Center(
+                      child: Column(
+                        children: [
+                          Text("Something went wrong"),
+                          SizedBox(height: 5),
+                          ElevatedButton(
+                            onPressed: () {
+                              productProvider.fetchRecommendedProducts();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorScheme.primary,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text("Retry"),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  if (index <= recommendedLength &&
+                      !productProvider.isRecommendedError) {
                     ProductEntity product =
                         productProvider.recommendedProducts[index - 1];
                     return _buildProductItem(
@@ -38,17 +64,15 @@ class ProductPage extends StatelessWidget {
                       "recommended",
                     );
                   }
-                  if (index == productProvider.recommendedProducts.length + 1) {
+                  if (index == recommendedLength + 1) {
                     return _buildHeader("Latest Products");
                   }
                   if (index <
-                      (productProvider.recommendedProducts.length +
+                      (recommendedLength +
                           productProvider.products.length +
                           1)) {
                     ProductEntity product =
-                        productProvider.products[index -
-                            productProvider.recommendedProducts.length -
-                            2];
+                        productProvider.products[index - recommendedLength - 2];
                     return _buildProductItem(
                       context,
                       product,
@@ -57,9 +81,7 @@ class ProductPage extends StatelessWidget {
                     );
                   }
                   if (index ==
-                      productProvider.recommendedProducts.length +
-                          productProvider.products.length +
-                          2) {
+                      recommendedLength + productProvider.products.length + 2) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Row(
@@ -82,10 +104,7 @@ class ProductPage extends StatelessWidget {
 Widget _buildHeader(String title) {
   return Padding(
     padding: const EdgeInsets.all(16.0),
-    child: Text(
-      title,
-      style: TextStyle(fontSize: 24),
-    ),
+    child: Text(title, style: TextStyle(fontSize: 24)),
   );
 }
 
@@ -147,8 +166,7 @@ Widget _buildProductItem(
                 cartProvider.addToCart(product, type);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    colorScheme.primary, // Set the background color here
+                backgroundColor: colorScheme.primary,
                 foregroundColor: Colors.white,
               ),
               child: Text("Add to Cart"),
@@ -215,40 +233,28 @@ Widget _buildQuantityChanger(
 }
 
 Widget _buildSkeletonLoading() {
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Skeletonizer(
-            child: Row(
-              children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  color: Colors.grey[300],
-                ),
-                SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 150,
-                      height: 16,
-                      color: Colors.grey[300],
-                    ),
-                    SizedBox(height: 6),
-                    Container(
-                      width: 100,
-                      height: 14,
-                      color: Colors.grey[300],
-                    ),
-                  ],
-                ),
-              ],
-            ),
+  return ListView.builder(
+    itemCount: 10,
+    itemBuilder: (context, index) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Skeletonizer(
+          child: Row(
+            children: [
+              Container(width: 60, height: 60, color: Colors.grey[300]),
+              SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(width: 150, height: 16, color: Colors.grey[300]),
+                  SizedBox(height: 6),
+                  Container(width: 100, height: 14, color: Colors.grey[300]),
+                ],
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}

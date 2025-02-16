@@ -14,9 +14,12 @@ class ProductProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _nextCursor;
 
+  bool _isRecommendedError = false;
+
   List<ProductEntity> get products => _products;
   List<ProductEntity> get recommendedProducts => _recommendedProducts;
   bool get isLoading => _isLoading;
+  bool get isRecommendedError => _isRecommendedError;
 
   final ScrollController scrollController = ScrollController();
 
@@ -42,7 +45,7 @@ class ProductProvider extends ChangeNotifier {
     try {
       final result = await getProducts(_nextCursor);
 
-      result.fold((failure) => print(failure.errorMessage), (data) {
+      result.fold((failure) => print(failure), (data) {
         final newProducts = data['products'] as List<dynamic>;
         final newCursor = data['nextCursor'] as String?;
 
@@ -72,12 +75,13 @@ class ProductProvider extends ChangeNotifier {
   Future<void> fetchRecommendedProducts() async {
     try {
       final result = await getRecommendedProducts();
-      result.fold((failure) => print(failure.errorMessage), (data) {
+      result.fold((failure) => _isRecommendedError = true, (data) {
         _recommendedProducts = data;
       });
-      notifyListeners();
     } catch (error) {
-      print(error);
+      _isRecommendedError = true;
+    }finally{
+      notifyListeners();
     }
   }
 
