@@ -1,4 +1,3 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:freshket_app/features/shopping/data/models/product_model.dart';
 import 'package:freshket_app/features/shopping/domain/entities/product_entity.dart';
@@ -70,10 +69,10 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-   Future<void> fetchRecommendedProducts() async {
+  Future<void> fetchRecommendedProducts() async {
     try {
       final result = await getRecommendedProducts();
-       result.fold((failure) => print(failure.errorMessage), (data) {
+      result.fold((failure) => print(failure.errorMessage), (data) {
         _recommendedProducts = data;
       });
       notifyListeners();
@@ -81,7 +80,6 @@ class ProductProvider extends ChangeNotifier {
       print(error);
     }
   }
-
 
   @override
   void dispose() {

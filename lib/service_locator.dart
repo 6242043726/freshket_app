@@ -9,6 +9,7 @@ import 'package:freshket_app/features/shopping/data/repositories/product_reposit
 import 'package:freshket_app/features/shopping/domain/repositories/product_repository.dart';
 import 'package:freshket_app/features/shopping/domain/usecases/get_product.dart';
 import 'package:freshket_app/features/shopping/domain/usecases/get_recommended_product.dart';
+import 'package:freshket_app/features/shopping/presentation/provider/cart_provider.dart';
 import 'package:freshket_app/features/shopping/presentation/provider/product_provider.dart';
 import 'package:get_it/get_it.dart';
 
@@ -46,4 +47,6 @@ void setupLocator() {
       getIt<GetRecommendedProducts>(),
     ),
   );
+
+  getIt.registerFactory<CartProvider>(() => CartProvider());
 }
