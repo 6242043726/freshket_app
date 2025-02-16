@@ -3,13 +3,21 @@ import 'package:freshket_app/features/shopping/domain/entities/product_entity.da
 import 'package:freshket_app/features/shopping/presentation/provider/cart_provider.dart';
 import 'package:provider/provider.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({super.key});
+
+  @override
+  _CartPageState createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  bool isCheckoutSuccess = false;
 
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Cart"),
@@ -18,13 +26,71 @@ class CartPage extends StatelessWidget {
           icon: Icon(Icons.arrow_back),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child:
-                cartProvider.cartItems.isEmpty
-                    ? Center(child: Text("Your cart is empty"))
-                    : ListView.builder(
+      body:
+          isCheckoutSuccess
+              ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      "Success!",
+                      style: TextStyle(
+                        fontSize: 32,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "Thank you for shopping with us!",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ), 
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                    ),
+                    child: Text(
+                      "Shop again",
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                ],
+              )
+              : cartProvider.cartItems.isEmpty
+              ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      "Empty Cart",
+                      style: TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ), 
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                    ),
+                    child: Text(
+                      "Go to shopping",
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                ],
+              )
+              : Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
                       itemCount: cartProvider.cartItems.length,
                       itemBuilder: (context, index) {
                         final cartItem = cartProvider.cartItems[index];
@@ -81,55 +147,31 @@ class CartPage extends StatelessWidget {
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Container(
-                                  width: 36.0,
-                                  height: 36.0,
-                                  margin: EdgeInsets.all(8.0),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.primary,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.remove,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      cartProvider.decreaseQuantity(
-                                        product,
-                                        type,
-                                      );
-                                    },
-                                    iconSize: 24.0,
-                                    padding: EdgeInsets.all(0),
+                                _buildQuantityButton(
+                                  context,
+                                  cartProvider,
+                                  product,
+                                  type,
+                                  Icons.remove,
+                                  () => cartProvider.decreaseQuantity(
+                                    product,
+                                    type,
                                   ),
                                 ),
-                                Container(
-                                  width: 24.0,
-                                  child: Text(
-                                    "${cartProvider.getQuantity(product, type)}",
-                                    style: TextStyle(fontSize: 18),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                Text(
+                                  "${cartProvider.getQuantity(product, type)}",
+                                  style: TextStyle(fontSize: 18),
+                                  textAlign: TextAlign.center,
                                 ),
-                                Container(
-                                  width: 36.0,
-                                  height: 36.0,
-                                  margin: EdgeInsets.all(8.0),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.primary,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(Icons.add, color: Colors.white),
-                                    onPressed: () {
-                                      cartProvider.increaseQuantity(
-                                        product,
-                                        type,
-                                      );
-                                    },
-                                    iconSize: 24.0,
-                                    padding: EdgeInsets.all(0),
+                                _buildQuantityButton(
+                                  context,
+                                  cartProvider,
+                                  product,
+                                  type,
+                                  Icons.add,
+                                  () => cartProvider.increaseQuantity(
+                                    product,
+                                    type,
                                   ),
                                 ),
                               ],
@@ -138,77 +180,112 @@ class CartPage extends StatelessWidget {
                         );
                       },
                     ),
-          ),
-          Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(color: colorScheme.primaryContainer),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSummaryRow(
-                  context,
-                  "Subtotal",
-                  cartProvider.subtotal,
-                  isBold: true,
-                ),
-                _buildSummaryRow(
-                  context,
-                  "Promotion discount",
-                  cartProvider.discount,
-                  isDiscount: true,
-                  isBold: true,
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "${cartProvider.total.toStringAsFixed(2)}",
-                        style: TextStyle(
-                          fontSize: 40,
-                          color: colorScheme.onPrimaryFixedVariant,
-                        ),
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
+                  ),
+                  _buildCheckoutSection(context, cartProvider, colorScheme),
+                ],
+              ),
+    );
+  }
 
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          bool success =  await cartProvider.checkout();
-                          if (!success) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Something went wrong'),
-                                backgroundColor: Colors.red[900],
-                                action: SnackBarAction(
-                                  label: 'x',
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(
-                                      context,
-                                    ).clearSnackBars();
-                                  },
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.primary,
-                          minimumSize: Size(double.infinity, 50),
-                        ),
-                        child: Text(
-                          "Checkout",
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-              ],
-            ),
+  Widget _buildQuantityButton(
+    BuildContext context,
+    CartProvider cartProvider,
+    ProductEntity product,
+    String type,
+    IconData icon,
+    VoidCallback onPressed,
+  ) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: 36.0,
+      height: 36.0,
+      margin: EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: colorScheme.primary,
+        shape: BoxShape.circle,
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.white),
+        onPressed: onPressed,
+        iconSize: 24.0,
+        padding: EdgeInsets.all(0),
+      ),
+    );
+  }
+
+  Widget _buildCheckoutSection(
+    BuildContext context,
+    CartProvider cartProvider,
+    ColorScheme colorScheme,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(color: colorScheme.primaryContainer),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSummaryRow(
+            context,
+            "Subtotal",
+            cartProvider.subtotal,
+            isBold: true,
           ),
+          _buildSummaryRow(
+            context,
+            "Promotion discount",
+            cartProvider.discount,
+            isDiscount: true,
+            isBold: true,
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "${cartProvider.total.toStringAsFixed(2)}",
+                  style: TextStyle(
+                    fontSize: 40,
+                    color: colorScheme.onPrimaryFixedVariant,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    bool success = await cartProvider.checkout();
+                    if (!success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Something went wrong'),
+                          backgroundColor: Colors.red[900],
+                          action: SnackBarAction(
+                            label: 'x',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                            },
+                          ),
+                        ),
+                      );
+                    } else {
+                      setState(() {
+                        isCheckoutSuccess = true;
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.primary,
+                    minimumSize: Size(double.infinity, 50),
+                  ),
+                  child: Text(
+                    "Checkout",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16),
         ],
       ),
     );

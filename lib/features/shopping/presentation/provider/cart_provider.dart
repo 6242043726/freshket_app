@@ -9,6 +9,10 @@ class CartProvider extends ChangeNotifier {
   final Map<String, int> _cartItems = {};
   final Map<String, ProductEntity> _productsInCart = {};
 
+  bool _isCheckoutSuccess = false;
+
+  bool get isCheckoutSuccess  => _isCheckoutSuccess;
+
   List<Map<String, dynamic>> get cartItems =>
       _cartItems.entries.map((entry) {
         final product = _productsInCart[entry.key];
@@ -90,6 +94,7 @@ class CartProvider extends ChangeNotifier {
     bool success = await checkoutUseCase(productIds);
 
     if (success) {
+      _isCheckoutSuccess = true;
       clearCart();
     }
     return success;
