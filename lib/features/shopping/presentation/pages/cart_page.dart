@@ -85,7 +85,7 @@ class CartPage extends StatelessWidget {
                                   ),
                                 ),
                                 Container(
-                                  width: 30.0,
+                                  width: 24.0,
                                   child: Text(
                                     "${cartProvider.getQuantity(product, type)}",
                                     style: TextStyle(fontSize: 18),

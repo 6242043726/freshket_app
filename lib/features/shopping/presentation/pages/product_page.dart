@@ -38,7 +38,7 @@ class ProductPage extends StatelessWidget {
                     );
                   }
                   if (index == productProvider.recommendedProducts.length + 1) {
-                    return _buildHeader("Products");
+                    return _buildHeader("Latest Products");
                   }
                   if (index <
                       (productProvider.recommendedProducts.length +
@@ -65,9 +65,7 @@ class ProductPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CircularProgressIndicator(),
-                          SizedBox(
-                            width: 10,
-                          ),
+                          SizedBox(width: 10),
                           Text('Loading..'),
                         ],
                       ),
@@ -97,51 +95,119 @@ Widget _buildProductItem(
   String type,
 ) {
   int quantity = cartProvider.getQuantity(product, type);
+  final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
   return ListTile(
     leading: ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Image.asset(
         'assets/images/img_placeholder.png',
-        width: 50,
-        height: 50,
+        width: 60,
+        height: 60,
         fit: BoxFit.cover,
       ),
     ),
-    title: Text(product.name),
-    subtitle: Text("\$${product.price.toStringAsFixed(2)}"),
+    title: Text(
+      product.name,
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: colorScheme.onPrimaryFixedVariant,
+      ),
+    ),
+    subtitle: RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: "${product.price.toStringAsFixed(2)}",
+            style: TextStyle(
+              color: colorScheme.onPrimaryFixedVariant,
+              fontSize: 20,
+            ),
+          ),
+          TextSpan(
+            text: " / unit",
+            style: TextStyle(color: colorScheme.onPrimaryFixedVariant),
+          ),
+        ],
+      ),
+    ),
+
     trailing:
         quantity > 0
-            ? _buildQuantityChanger(cartProvider, product, quantity, type)
+            ? _buildQuantityChanger(
+              context,
+              cartProvider,
+              product,
+              quantity,
+              type,
+            )
             : ElevatedButton(
               onPressed: () {
                 cartProvider.addToCart(product, type);
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    colorScheme.primary, // Set the background color here
+                foregroundColor: Colors.white,
+              ),
               child: Text("Add to Cart"),
             ),
   );
 }
 
 Widget _buildQuantityChanger(
+  BuildContext context,
   CartProvider cartProvider,
   ProductEntity productEntity,
   int quantity,
   String type,
 ) {
+  final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
   return Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      IconButton(
-        icon: Icon(Icons.remove),
-        onPressed: () => cartProvider.decreaseQuantity(productEntity, type),
+      Container(
+        width: 36.0,
+        height: 36.0,
+        margin: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: colorScheme.primary,
+          shape: BoxShape.circle,
+        ),
+        child: IconButton(
+          icon: Icon(Icons.remove, color: Colors.white),
+          onPressed: () {
+            cartProvider.decreaseQuantity(productEntity, type);
+          },
+          iconSize: 24.0,
+          padding: EdgeInsets.all(0),
+        ),
       ),
-      Text(
-        "$quantity",
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      Container(
+        width: 24.0,
+        child: Text(
+          "${cartProvider.getQuantity(productEntity, type)}",
+          style: TextStyle(fontSize: 18),
+          textAlign: TextAlign.center,
+        ),
       ),
-      IconButton(
-        icon: Icon(Icons.add),
-        onPressed: () => cartProvider.increaseQuantity(productEntity, type),
+      Container(
+        width: 36.0,
+        height: 36.0,
+        margin: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: colorScheme.primary,
+          shape: BoxShape.circle,
+        ),
+        child: IconButton(
+          icon: Icon(Icons.add, color: Colors.white),
+          onPressed: () {
+            cartProvider.increaseQuantity(productEntity, type);
+          },
+          iconSize: 24.0,
+          padding: EdgeInsets.all(0),
+        ),
       ),
     ],
   );
