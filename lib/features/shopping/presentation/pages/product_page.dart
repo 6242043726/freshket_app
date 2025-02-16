@@ -80,10 +80,10 @@ class ProductPage extends StatelessWidget {
 
 Widget _buildHeader(String title) {
   return Padding(
-    padding: const EdgeInsets.all(12.0),
+    padding: const EdgeInsets.all(16.0),
     child: Text(
       title,
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      style: TextStyle(fontSize: 24),
     ),
   );
 }

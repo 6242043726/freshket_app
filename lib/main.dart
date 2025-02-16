@@ -33,7 +33,8 @@ class MainApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePage()
+      home: HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

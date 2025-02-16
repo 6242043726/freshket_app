@@ -27,20 +27,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: ProductPage(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.store),
-            label: "Shopping",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: "Cart",
-          ),
+      bottomNavigationBar: NavigationBar(
+        indicatorColor: colorScheme.primaryContainer,
+        onDestinationSelected: (int index) {
+          _onItemTapped(index);
+        },
+        destinations: const <Widget>[
+          NavigationDestination(icon: Icon(Icons.stars), label: "Shopping"),
+          NavigationDestination(icon: Icon(Icons.star), label: "Cart"),
         ],
       ),
     );

@@ -47,14 +47,36 @@ class CartPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8.0),
                               child: Image.asset(
                                 'assets/images/img_placeholder.png',
-                                width: 50,
-                                height: 50,
+                                width: 60,
+                                height: 60,
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            title: Text(product.name),
-                            subtitle: Text(
-                              "\$${product.price.toStringAsFixed(2)}",
+                            title: Text(
+                              product.name,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.onPrimaryFixedVariant,
+                              ),
+                            ),
+                            subtitle: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "${product.price.toStringAsFixed(2)}",
+                                    style: TextStyle(
+                                      color: colorScheme.onPrimaryFixedVariant,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: " / unit",
+                                    style: TextStyle(
+                                      color: colorScheme.onPrimaryFixedVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -79,9 +101,7 @@ class CartPage extends StatelessWidget {
                                       );
                                     },
                                     iconSize: 24.0,
-                                    padding: EdgeInsets.all(
-                                      0,
-                                    ),
+                                    padding: EdgeInsets.all(0),
                                   ),
                                 ),
                                 Container(
@@ -109,9 +129,7 @@ class CartPage extends StatelessWidget {
                                       );
                                     },
                                     iconSize: 24.0,
-                                    padding: EdgeInsets.all(
-                                      0,
-                                    ),
+                                    padding: EdgeInsets.all(0),
                                   ),
                                 ),
                               ],
