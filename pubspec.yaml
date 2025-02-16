@@ -14,6 +14,7 @@ dependencies:
   dartz: ^0.10.1
   provider: ^6.1.2
   get_it: ^8.0.3
+  skeletonizer: ^1.4.3
 
 dev_dependencies:
   flutter_test:

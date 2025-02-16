@@ -3,6 +3,7 @@ import 'package:freshket_app/features/shopping/domain/entities/product_entity.da
 import 'package:freshket_app/features/shopping/presentation/provider/cart_provider.dart';
 import 'package:freshket_app/features/shopping/presentation/provider/product_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
@@ -15,7 +16,7 @@ class ProductPage extends StatelessWidget {
     return Scaffold(
       body:
           productProvider.products.isEmpty
-              ? Center(child: CircularProgressIndicator())
+              ? _buildSkeletonLoading()
               : ListView.builder(
                 controller: productProvider.scrollController,
                 itemCount:
@@ -212,3 +213,42 @@ Widget _buildQuantityChanger(
     ],
   );
 }
+
+Widget _buildSkeletonLoading() {
+    return ListView.builder(
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Skeletonizer(
+            child: Row(
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  color: Colors.grey[300],
+                ),
+                SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 150,
+                      height: 16,
+                      color: Colors.grey[300],
+                    ),
+                    SizedBox(height: 6),
+                    Container(
+                      width: 100,
+                      height: 14,
+                      color: Colors.grey[300],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
