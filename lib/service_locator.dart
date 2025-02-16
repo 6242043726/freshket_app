@@ -8,6 +8,7 @@ import 'package:freshket_app/features/shopping/data/datasources/remote/product_d
 import 'package:freshket_app/features/shopping/data/repositories/product_repository_impl.dart';
 import 'package:freshket_app/features/shopping/domain/repositories/product_repository.dart';
 import 'package:freshket_app/features/shopping/domain/usecases/get_product.dart';
+import 'package:freshket_app/features/shopping/domain/usecases/get_recommended_product.dart';
 import 'package:freshket_app/features/shopping/presentation/provider/product_provider.dart';
 import 'package:get_it/get_it.dart';
 
@@ -35,9 +36,14 @@ void setupLocator() {
     () => GetProducts(getIt<ProductRepository>()),
   );
 
+   getIt.registerLazySingleton<GetRecommendedProducts>(
+    () => GetRecommendedProducts(getIt<ProductRepository>()),
+  );
+
   getIt.registerFactory<ProductProvider>(
     () => ProductProvider(
       getIt<GetProducts>(),
+      getIt<GetRecommendedProducts>(),
     ),
   );
 }

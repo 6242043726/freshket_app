@@ -3,22 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:freshket_app/features/shopping/data/models/product_model.dart';
 import 'package:freshket_app/features/shopping/domain/entities/product_entity.dart';
 import 'package:freshket_app/features/shopping/domain/usecases/get_product.dart';
+import 'package:freshket_app/features/shopping/domain/usecases/get_recommended_product.dart';
 
 class ProductProvider extends ChangeNotifier {
   final GetProducts getProducts;
+  final GetRecommendedProducts getRecommendedProducts;
 
   List<ProductEntity> _products = [];
+  List<ProductEntity> _recommendedProducts = [];
+
   bool _isLoading = false;
   String? _nextCursor;
 
   List<ProductEntity> get products => _products;
+  List<ProductEntity> get recommendedProducts => _recommendedProducts;
   bool get isLoading => _isLoading;
 
   final ScrollController scrollController = ScrollController();
 
-  ProductProvider(this.getProducts) {
+  ProductProvider(this.getProducts, this.getRecommendedProducts) {
     scrollController.addListener(_scrollListener);
     fetchProducts();
+    fetchRecommendedProducts();
   }
 
   void _scrollListener() {
@@ -61,6 +67,18 @@ class ProductProvider extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+   Future<void> fetchRecommendedProducts() async {
+    try {
+      final result = await getRecommendedProducts();
+       result.fold((failure) => print(failure.errorMessage), (data) {
+        _recommendedProducts = data;
+      });
+      notifyListeners();
+    } catch (error) {
+      print(error);
     }
   }
 
