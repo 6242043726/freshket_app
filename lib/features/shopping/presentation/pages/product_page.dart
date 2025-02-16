@@ -15,7 +15,8 @@ class ProductPage extends StatelessWidget {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     int recommendedLength =
-        productProvider.recommendedProducts.isNotEmpty && !productProvider.isRecommendedError
+        productProvider.recommendedProducts.isNotEmpty &&
+                !productProvider.isRecommendedError
             ? productProvider.recommendedProducts.length
             : 1;
     return Scaffold(

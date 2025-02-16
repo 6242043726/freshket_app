@@ -5,13 +5,13 @@ import 'package:freshket_app/features/shopping/domain/usecases/checkout.dart';
 class CartProvider extends ChangeNotifier {
   final CheckoutUseCase checkoutUseCase;
   CartProvider({required this.checkoutUseCase});
-  
+
   final Map<String, int> _cartItems = {};
   final Map<String, ProductEntity> _productsInCart = {};
 
   bool _isCheckoutSuccess = false;
 
-  bool get isCheckoutSuccess  => _isCheckoutSuccess;
+  bool get isCheckoutSuccess => _isCheckoutSuccess;
 
   List<Map<String, dynamic>> get cartItems =>
       _cartItems.entries.map((entry) {
@@ -75,11 +75,8 @@ class CartProvider extends ChangeNotifier {
     _cartItems.forEach((key, quantity) {
       final product = _productsInCart[key];
       if (product != null) {
-        int discountPairs = quantity ~/ 2; 
-        totalDiscount +=
-            discountPairs *
-            product.price *
-            0.1; 
+        int discountPairs = quantity ~/ 2;
+        totalDiscount += discountPairs * product.price * 0.1;
       }
     });
     return totalDiscount;

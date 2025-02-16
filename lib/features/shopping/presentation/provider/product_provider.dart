@@ -80,7 +80,7 @@ class ProductProvider extends ChangeNotifier {
       });
     } catch (error) {
       _isRecommendedError = true;
-    }finally{
+    } finally {
       notifyListeners();
     }
   }

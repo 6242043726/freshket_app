@@ -32,12 +32,7 @@ class _CartPageState extends State<CartPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                    child: Text(
-                      "Success!",
-                      style: TextStyle(
-                        fontSize: 32,
-                      ),
-                    ),
+                    child: Text("Success!", style: TextStyle(fontSize: 32)),
                   ),
                   Center(
                     child: Text(
@@ -45,9 +40,7 @@ class _CartPageState extends State<CartPage> {
                       style: TextStyle(fontSize: 14),
                     ),
                   ),
-                  SizedBox(
-                    height: 8,
-                  ), 
+                  SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
@@ -65,16 +58,9 @@ class _CartPageState extends State<CartPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                    child: Text(
-                      "Empty Cart",
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
-                    ),
+                    child: Text("Empty Cart", style: TextStyle(fontSize: 24)),
                   ),
-                  SizedBox(
-                    height: 8,
-                  ), 
+                  SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(

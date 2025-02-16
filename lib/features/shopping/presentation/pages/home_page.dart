@@ -10,7 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     if (index == 1) {
@@ -18,16 +17,11 @@ class _HomePageState extends State<HomePage> {
         context,
         MaterialPageRoute(builder: (context) => CartPage()),
       );
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
