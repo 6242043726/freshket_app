@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:freshket_app/core/constants/constants.dart';
 import 'package:freshket_app/features/shopping/domain/repositories/cart_repository.dart';
 
 class CartRepositoryImpl implements CartRepository {
@@ -10,7 +11,7 @@ class CartRepositoryImpl implements CartRepository {
   Future<bool> checkout(List<int> productIds) async {
     try {
       final response = await dio.post(
-        '/orders/checkout',
+        '${ApiConfig.checkout}',
         data: {'products': productIds},
       );
 

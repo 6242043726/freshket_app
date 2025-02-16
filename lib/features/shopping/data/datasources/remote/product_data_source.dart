@@ -17,7 +17,7 @@ class ProductDataSourceImpl implements ProductDataSource {
   @override
   Future<Map<String, dynamic>> fetchProducts(String? nextCursor) async {
     nextCursor ??= "";
-    final response = await dio.get('$BASE_URL/products?cursor=$nextCursor');
+    final response = await dio.get('${ApiConfig.baseUrl}/${ApiConfig.products}Path?cursor=$nextCursor');
 
     if (response.statusCode == 200) {
 
@@ -33,7 +33,7 @@ class ProductDataSourceImpl implements ProductDataSource {
   
   @override
   Future<List<ProductModel>> fetchRecommendedProducts() async {
-    final response = await dio.get('$BASE_URL/recommended-products');
+    final response = await dio.get('${ApiConfig.baseUrl}/${ApiConfig.recommendedProducts}');
 
     if (response.statusCode == 200) {
 
