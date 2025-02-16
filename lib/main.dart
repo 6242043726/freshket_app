@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:freshket_app/features/shopping/presentation/pages/home_page.dart';
 import 'package:freshket_app/features/shopping/presentation/pages/product_page.dart';
 import 'package:freshket_app/features/shopping/presentation/provider/cart_provider.dart';
 import 'package:freshket_app/features/shopping/presentation/provider/product_provider.dart';
@@ -28,7 +29,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: ProductPage()
+      home: HomePage()
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:freshket_app/core/connection/network_info.dart';
 import 'package:freshket_app/core/errors/exceptions.dart';
 import 'package:freshket_app/core/errors/failure.dart';
 import 'package:freshket_app/features/shopping/data/datasources/remote/product_data_source.dart';
-import 'package:freshket_app/features/shopping/data/models/product_model.dart';
 import 'package:freshket_app/features/shopping/domain/entities/product_entity.dart';
 import 'package:freshket_app/features/shopping/domain/repositories/product_repository.dart';
 
