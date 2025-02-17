@@ -17,7 +17,7 @@ class ProductDataSourceImpl implements ProductDataSource {
   @override
   Future<Map<String, dynamic>> fetchProducts(String? nextCursor) async {
     nextCursor ??= "";
-    final response = await dio.get('${ApiConfig.baseUrl}/${ApiConfig.products}Path?cursor=$nextCursor');
+    final response = await dio.get('${ApiConfig.baseUrl}/${ApiConfig.products}?cursor=$nextCursor');
 
     if (response.statusCode == 200) {
 
